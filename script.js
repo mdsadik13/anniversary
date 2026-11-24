@@ -8,6 +8,7 @@ openStory.addEventListener("click", () => {
   opening.classList.add("is-open");
   site.classList.add("is-visible");
   document.body.classList.remove("opening-active");
+  window.setTimeout(() => site.classList.add("is-heart-lit"), 750);
   window.setTimeout(() => opening.setAttribute("aria-hidden", "true"), 1000);
 });
 
@@ -100,6 +101,7 @@ memories.forEach((memory, index) => {
   card.className = `gallery-card reveal${index % 7 === 0 ? " gallery-card--tall" : ""}${index % 11 === 3 ? " gallery-card--wide" : ""}`;
   card.dataset.index = String(index);
   card.setAttribute("aria-label", `Open memory ${String(index + 1).padStart(2, "0")}`);
+  card.style.setProperty("--card-z", String(index + 1));
   card.innerHTML = `
     <img src="${memory.src}" alt="An anniversary memory" loading="${index < 6 ? "eager" : "lazy"}">
   `;
