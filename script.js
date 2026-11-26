@@ -30,6 +30,7 @@ siteNav.querySelectorAll("a").forEach(link => {
     navToggle.classList.remove("is-open");
     siteNav.classList.remove("is-open");
     navToggle.setAttribute("aria-expanded", "false");
+    navToggle.setAttribute("aria-label", "Open navigation");
   });
 });
 
@@ -98,12 +99,13 @@ const gallery = document.getElementById("gallery");
 memories.forEach((memory, index) => {
   const card = document.createElement("button");
   card.type = "button";
-  card.className = `gallery-card reveal${index % 7 === 0 ? " gallery-card--tall" : ""}${index % 11 === 3 ? " gallery-card--wide" : ""}`;
+  card.className = `gallery-card reveal${index % 7 === 0 ? " gallery-card--tall" : ""}${index % 11 === 3 ? " gallery-card--wide" : ""}${memory.file === "FirstDayWeMetInreal.jpeg" ? " gallery-card--love" : ""}`;
   card.dataset.index = String(index);
   card.setAttribute("aria-label", `Open memory ${String(index + 1).padStart(2, "0")}`);
   card.style.setProperty("--card-z", String(index + 1));
   card.innerHTML = `
     <img src="${memory.src}" alt="An anniversary memory" loading="${index < 6 ? "eager" : "lazy"}">
+    ${memory.file === "FirstDayWeMetInreal.jpeg" ? '<svg class="gallery-card__love-border" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><rect class="gallery-card__love-border-glow" x="2" y="2" width="96" height="96" rx="3"></rect><rect class="gallery-card__love-border-line" x="2" y="2" width="96" height="96" rx="3"></rect></svg>' : ""}
   `;
   card.style.transitionDelay = `${(index % 6) * 55}ms`;
   card.addEventListener("click", () => showLightbox(index));
@@ -120,7 +122,7 @@ function showLightbox(index) {
   lightboxIndex = (index + memories.length) % memories.length;
   const memory = memories[lightboxIndex];
   lightboxImage.src = memory.src;
-  lightboxImage.alt = memory.title;
+  lightboxImage.alt = memory.title || "A memory from our first year together";
   lightboxCaption.textContent = "";
   lightbox.classList.add("is-open");
   lightbox.setAttribute("aria-hidden", "false");
@@ -149,34 +151,6 @@ lightbox.addEventListener("touchstart", event => { touchStartX = event.changedTo
 lightbox.addEventListener("touchend", event => {
   const delta = event.changedTouches[0].clientX - touchStartX;
   if (Math.abs(delta) > 45) showLightbox(lightboxIndex + (delta < 0 ? 1 : -1));
-}, { passive: true });
-
-const albumImage = document.getElementById("albumImage");
-const albumCaption = document.getElementById("albumCaption");
-const albumIndex = document.getElementById("albumIndex");
-let albumPosition = 0;
-
-function showAlbum(index) {
-  albumPosition = (index + memories.length) % memories.length;
-  const memory = memories[albumPosition];
-  albumImage.classList.add("is-changing");
-  window.setTimeout(() => {
-    albumImage.src = memory.src;
-    albumImage.alt = memory.title;
-    albumCaption.innerHTML = "";
-    albumIndex.textContent = String(albumPosition + 1).padStart(2, "0");
-    albumImage.classList.remove("is-changing");
-  }, 220);
-}
-document.querySelector(".album__nav--prev").addEventListener("click", () => showAlbum(albumPosition - 1));
-document.querySelector(".album__nav--next").addEventListener("click", () => showAlbum(albumPosition + 1));
-
-const album = document.getElementById("album");
-let albumTouchStartX = 0;
-album.addEventListener("touchstart", event => { albumTouchStartX = event.changedTouches[0].clientX; }, { passive: true });
-album.addEventListener("touchend", event => {
-  const delta = event.changedTouches[0].clientX - albumTouchStartX;
-  if (Math.abs(delta) > 45) showAlbum(albumPosition + (delta < 0 ? 1 : -1));
 }, { passive: true });
 
 document.getElementById("finalReveal").addEventListener("click", event => {
