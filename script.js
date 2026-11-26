@@ -3,6 +3,24 @@ document.body.classList.add("opening-active");
 const opening = document.getElementById("opening");
 const site = document.getElementById("site");
 const openStory = document.getElementById("openStory");
+opening.classList.add("is-signature-playing");
+
+const pinkHearts = document.querySelectorAll(".ambient-hearts--pink span");
+const heartColumns = 5;
+const heartRows = Math.ceil(pinkHearts.length / heartColumns);
+let heartSeed = 2711;
+const nextHeartRandom = () => {
+  heartSeed = (heartSeed * 1664525 + 1013904223) >>> 0;
+  return heartSeed / 4294967296;
+};
+pinkHearts.forEach((heart, index) => {
+  const column = index % heartColumns;
+  const row = Math.floor(index / heartColumns);
+  const x = 5 + (column + .5 + (nextHeartRandom() - .5) * .5) * 90 / heartColumns;
+  const y = (row + .5 + (nextHeartRandom() - .5) * .7) * 100 / heartRows;
+  heart.style.left = `${x}%`;
+  heart.style.top = `${y}%`;
+});
 
 openStory.addEventListener("click", () => {
   opening.classList.add("is-open");
